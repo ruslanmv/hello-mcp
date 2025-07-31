@@ -33,7 +33,7 @@ setup: ## Create the Python virtual environment
 
 install: setup ## Install all project dependencies
 	@echo "--- Installing dependencies from pyproject.toml ---"
-	@$(POETRY) install
+	$(POETRY) install
 	@echo "--- Dependencies installed. ---"
 
 run-stdio: install ## Run the self-contained STDIO client/server demo
