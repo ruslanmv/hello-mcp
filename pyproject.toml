@@ -2,7 +2,7 @@
 name = "mcp-core-hello-world"
 version = "0.1.0"
 description = "A demo project for the core MCP library using STDIO and SSE."
-authors = ["Your Name <you@example.com>"]
+authors = ["ruslannv <contact@ruslanmv.com>"]
 readme = "README.md"
 package-mode = false
 
