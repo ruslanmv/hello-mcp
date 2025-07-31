@@ -1,36 +1,31 @@
-# agents/hello_world/client_sse.py
+#!/usr/bin/env python3
+import requests
+import sseclient
+import threading
+import json
 
-import asyncio
-from mcp import ClientSession
-from mcp.client.transports.sse import SseClient
+URL = "http://127.0.0.1:8000/sse"
 
-# The URL of the running SSE server.
-SERVER_URL = "http://127.0.0.1:8000/sse"
+print(f"--- Connecting to SSE server at {URL} ---")
+resp = requests.get(URL, stream=True)
+client = sseclient.SSEClient(resp)
 
-async def main():
-    """
-    This client connects to a separately running SSE server over HTTP.
-    """
-    print(f"--- Connecting to SSE server at {SERVER_URL} ---")
-    
-    # 1. Create an SseClient instance, pointing to the server's URL.
-    client = SseClient(SERVER_URL)
+# The first message is the `endpoint` event carrying POST URL
+event = next(client)
+post_url = event.data
 
-    try:
-        # 2. The client's connect() method establishes the HTTP connection
-        #    and provides the reader/writer streams.
-        async with client.connect() as (reader, writer):
-            async with ClientSession(reader, writer) as session:
-                await session.initialize()
+# Send JSON-RPC over POST
+data = json.dumps({
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "call_tool",
+    "params": {"name": "hello", "arguments": {}},
+})
+requests.post(post_url, data=data)
 
-                # 3. Call the 'hello' tool just like in the STDIO example.
-                response = await session.call_tool("hello", {"name": "SSE World"})
-                print(f"Server response: {response['result']}")
-
-    except ConnectionRefusedError:
-        print(f"--- ❌ Connection failed. Is the SSE server running? ---")
-        print("--- You may need to run 'make start-sse' first. ---")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# Listen for the response message for tool result
+for event in client:
+    if event.event == "message":
+        msg = json.loads(event.data)
+        print("Server response:", msg.get("result"))
+        break
