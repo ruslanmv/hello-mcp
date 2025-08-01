@@ -9,26 +9,20 @@
     "events_url": "http://127.0.0.1:8000/sse",
     "invoke_url": "http://127.0.0.1:8000/invoke"
   },
-  "capabilities": {
-    "tools": true
-  },
+  "capabilities": { "tools": true },
   "tools": [
     {
       "name": "hello",
       "description": "Return a simple greeting.",
       "input_schema": {
         "type": "object",
-        "properties": {
-          "name": { "type": "string", "description": "Name to greet" }
-        },
+        "properties": { "name": { "type": "string", "description": "Name to greet" } },
         "required": ["name"],
         "additionalProperties": false
       },
       "output_schema": {
         "type": "object",
-        "properties": {
-          "text": { "type": "string", "description": "Greeting text" }
-        },
+        "properties": { "text": { "type": "string", "description": "Greeting text" } },
         "required": ["text"],
         "additionalProperties": false
       },
