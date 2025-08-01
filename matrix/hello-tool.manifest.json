@@ -1,0 +1,20 @@
+{
+  "name": "hello",
+  "description": "Return a simple greeting.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string", "description": "Name to greet" }
+    },
+    "required": ["name"],
+    "additionalProperties": false
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "text": { "type": "string", "description": "Greeting result" }
+    },
+    "required": ["text"],
+    "additionalProperties": false
+  }
+}

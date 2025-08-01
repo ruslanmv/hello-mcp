@@ -1,0 +1,37 @@
+{
+  "id": "hello-sse-agent",
+  "name": "Hello Agent",
+  "description": "Agent that uses the Hello SSE server to greet users.",
+  "version": "0.1.0",
+  "server": {
+    "id": "hello-sse-server",
+    "base_url": "http://127.0.0.1:8000/",
+    "transport": {
+      "type": "sse",
+      "events_url": "http://127.0.0.1:8000/sse",
+      "invoke_url": "http://127.0.0.1:8000/invoke"
+    }
+  },
+  "tools": [
+    {
+      "name": "hello",
+      "description": "Return a simple greeting.",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" }
+        },
+        "required": ["text"],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
