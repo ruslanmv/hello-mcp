@@ -1,31 +1,46 @@
 #!/usr/bin/env python3
-import subprocess
-import json
-import sys
+import anyio
+from mcp.server.lowlevel import Server, NotificationOptions
+from mcp.server.stdio import stdio_server
+from mcp.server.models import InitializationOptions
+import mcp.types as types
 
-# Start the server as a subprocess
-proc = subprocess.Popen(
-    [sys.executable, "agents/hello_world/server_stdio.py"],
-    stdin=subprocess.PIPE,
-    stdout=subprocess.PIPE,
-    text=True,
-)
+# 1) Low‐level stdio server
+server = Server("hello-world-stdio")
 
-# Build a JSON-RPC call to `hello`
-request = {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "call_tool",
-    "params": {"name": "hello", "arguments": {}},
-}
-proc.stdin.write(json.dumps(request) + "\n")
-proc.stdin.flush()
+# 2) Tools
+@server.list_tools()
+async def list_tools() -> list[types.Tool]:
+    return [
+        types.Tool(
+            name="hello",
+            description="Return a Hello World greeting",
+            inputSchema={"type":"object","properties":{},"required":[]},
+        )
+    ]
 
-# Read response
-line = proc.stdout.readline()
-resp = json.loads(line)
-print("Server response:", resp.get("result", "<no result>"))
+@server.call_tool()
+async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
+    if name == "hello":
+        return [types.TextContent(type="text", text="Hello, stdio World!")]
+    raise ValueError(f"Unknown tool: {name}")
 
-# Shutdown
-proc.stdin.close()
-proc.wait()
+# 3) Entrypoint over stdio
+async def run_server():
+    # stdio_server() sets up JSON-RPC over your process's stdin/stdout
+    async with stdio_server() as (read_stream, write_stream):
+        await server.run(
+            read_stream,
+            write_stream,
+            InitializationOptions(
+                server_name="hello-world-stdio",
+                server_version="0.1.0",
+                capabilities=server.get_capabilities(
+                    notification_options=NotificationOptions(),
+                    experimental_capabilities={},
+                ),
+            ),
+        )
+
+if __name__ == "__main__":
+    anyio.run(run_server)

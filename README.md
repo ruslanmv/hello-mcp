@@ -1,121 +1,165 @@
 # MCP Core: Hello World Agent
 
-This project demonstrates how to build a simple "Hello World" agent using the core `mcp` library, without the `fastmcp` wrapper. It is structured to highlight two different communication methods: **STDIO** and **SSE (HTTP)**.
+This project demonstrates how to build a minimal “Hello World” agent using the core `mcp` library, **without** the `FastMCP` helper. It includes two interchangeable transport modes:
 
-The agent exposes a single tool, **`hello`**, which returns a greeting to a given name.
+1. **STDIO** — the client spawns the server as a subprocess and they talk over pipes (`stdin`/`stdout`).
+2. **SSE (HTTP)** — the server runs as a standalone HTTP service, and clients connect via Server-Sent Events.
 
-## 📂 File Structure
+---
+
+## 📂 Repository Layout
 
 ```
+
 .
 ├── agents/
-│   └── hello_world/
-│       ├── client_sse.py       # Client for the SSE server
-│       ├── client_stdio.py     # Client for the STDIO server
-│       ├── server_sse.py       # The SSE (HTTP) agent server
-│       └── server_stdio.py     # The STDIO agent server
+│   └── hello\_world/
+│       ├── server\_stdio.py     # STDIO‐based MCP server
+│       ├── client\_stdio.py     # Client that launches & uses the STDIO server
+│       ├── server\_sse.py       # SSE (HTTP)‐based MCP server
+│       └── client\_sse.py       # Client for the SSE server
 ├── Makefile
 ├── pyproject.toml
 └── README.md
-```
 
-## ✅ Requirements
+````
 
-  * Python 3.11 or later
-  * `make` command-line utility
+---
 
-## 🚀 Getting Started
+## ✅ Prerequisites
 
-### 1\. Installation
+- **Python 3.11 +**  
+- **make** (GNU Make)
 
-First, set up the Python virtual environment and install the required dependencies using the `Makefile`.
+---
 
-```
+## 🚀 Quickstart
+
+Install dependencies and set up your virtual environment:
+
+```bash
 make install
-```
+````
 
------
+---
 
 ## Version 1: STDIO Communication
 
-In this model, the client launches the server as a subprocess and they communicate over pipes (`stdin`/`stdout`). The server only exists for the duration of the client's session.
+In STDIO mode, the client script **launches** the server subprocess and communicates over pipes. The server lives only as long as the client.
 
-### Run the STDIO Demo
+### Commands
 
-Execute the following command:
+* **Start & run demo (server + client)**
 
+  ```bash
+  make run-stdio
+  ```
+
+  This will:
+
+  1. Kill any old STDIO server.
+  2. Launch `agents/hello_world/server_stdio.py` in the background.
+  3. Run `agents/hello_world/client_stdio.py` (which calls the `hello` tool).
+  4. Print the greeting, then exit.
+
+* **Manually start the STDIO server**
+
+  ```bash
+  make start-stdio
+  ```
+
+  Background‐launches the server alone and records its PID in `.stdio-pid`.
+
+* **Run client against existing STDIO server**
+
+  ```bash
+  make run-client-stdio
+  ```
+
+* **Stop the STDIO server**
+
+  ```bash
+  make stop-stdio
+  ```
+
+### Expected Output
+
+```plain
+Initialized session: meta=None protocolVersion='2025-06-18' …
+Available tools: ['hello']
+Server says: Hello, stdio World!
 ```
-make run-stdio
-```
 
-This command runs the `client_stdio.py` script, which automatically starts `server_stdio.py`, calls the `hello` tool, prints the response, and then terminates.
-
-**Expected Output:**
-
-```
---- Running MCP client and server over STDIO ---
-Server response: Hello, STDIO World!
-```
-
------
+---
 
 ## Version 2: SSE (HTTP) Communication
 
-In this model, the server is a standalone, persistent process that listens for network connections. Clients connect to it over HTTP. This allows a single server to handle multiple clients.
+In SSE mode, the server is a standalone HTTP service at port 8000. Clients connect via Server-Sent Events, allowing multiple clients to share one server.
 
-### Step 1: Start the SSE Server
+### Commands
 
-First, start the server in the background:
+* **Start the SSE server**
 
+  ```bash
+  make start-sse
+  ```
+
+  * Launches `agents/hello_world/server_sse.py` on `http://127.0.0.1:8000/messages/`
+  * Waits until the port is listening, then saves its PID to `.sse-pid`.
+
+* **Run the SSE client**
+
+  ```bash
+  make run-client-sse
+  ```
+
+  * Connects to `http://127.0.0.1:8000/messages/`
+  * Lists tools and invokes `hello`.
+
+* **Stop the SSE server**
+
+  ```bash
+  make stop-sse
+  ```
+
+### Expected Output
+
+```plain
+Initialized session: meta=None protocolVersion='2025-06-18' …
+Available tools: ['hello']
+Server says: Hello, SSE World!
 ```
-make start-sse
-```
 
-This will launch the server, which will listen on `http://127.0.0.1:8000/sse`.
+---
 
-### Step 2: Run the SSE Client
+## ⚖️ STDIO vs. SSE
 
-With the server running, open another terminal (or use the same one) and run the client:
+| Aspect        | STDIO                                    | SSE (HTTP)                                     |
+| :------------ | :--------------------------------------- | :--------------------------------------------- |
+| **Server**    | Spawned by client; short‐lived           | Persistent background process                  |
+| **Transport** | `stdin`/`stdout` pipes                   | HTTP + Server‐Sent Events                      |
+| **Port**      | None                                     | TCP port 8000 (`/messages/` SSE endpoint)      |
+| **Use case**  | One‐off tool integrations, local scripts | Multi‐client service, network‐accessible agent |
 
-```
-make run-client-sse
-```
+---
 
-The client will connect to the running server, call the `hello` tool, and print the response.
+## 📖 Makefile Targets
 
-**Expected Output:**
+| Target                  | Description                                                |
+| :---------------------- | :--------------------------------------------------------- |
+| `make install`          | Set up virtualenv & install dependencies.                  |
+| **STDIO**               |                                                            |
+| `make start-stdio`      | Launch STDIO server in background.                         |
+| `make run-stdio`        | Start server (if needed) & run STDIO client.               |
+| `make run-client-stdio` | Run STDIO client only.                                     |
+| `make stop-stdio`       | Kill the background STDIO server.                          |
+| **SSE (HTTP)**          |                                                            |
+| `make start-sse`        | Launch SSE server on port 8000.                            |
+| `make run-client-sse`   | Run client that connects to the SSE server.                |
+| `make stop-sse`         | Kill the background SSE server.                            |
+| **General**             |                                                            |
+| `make clean`            | Stop any servers, remove the virtualenv & build artifacts. |
 
-```
---- Connecting to SSE server at http://127.0.0.1:8000/sse ---
-Server response: Hello, SSE World!
-```
+---
 
-### Step 3: Stop the SSE Server
-
-When you are finished, stop the background server process:
-
-```
-make stop-sse
-```
-
------
-
-## Key Differences: STDIO vs. SSE
-
-| Feature | STDIO (Standard I/O) | SSE (HTTP) |
-| :--- | :--- | :--- |
-| **Lifecycle** | The server's lifecycle is tied to the client. It starts and stops with the client. | The server is a persistent, long-running process, independent of any single client. |
-| **Communication**| Uses standard input/output pipes. No network ports are involved. | Uses HTTP and Server-Sent Events over a network socket. |
-| **Use Case** | Ideal for self-contained scripts or tools where an agent is needed temporarily. | Ideal for building robust services that need to be available to multiple clients or other services on a network. |
-| **Complexity** | Simpler to run as a single command. The client manages the server process. | Requires separate steps to start/stop the server. More closely resembles a typical client-server architecture. |
-
-## Makefile Commands
-
-| Command | Description |
-| :--- | :--- |
-| `make install` | Installs all project dependencies. |
-| `make run-stdio` | Runs the self-contained STDIO client/server demo. |
-| `make start-sse` | Starts the SSE agent server in the background. |
-| `make run-client-sse`| Runs the client to connect to the SSE server. |
-| `make stop-sse` | Stops the background SSE agent server. |
-| `make clean` | Stops the server and removes the virtual environment and build artifacts. |
+Happy building your MCP agents! Feel free to explore and extend these examples for your own tools and transports.

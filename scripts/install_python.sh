@@ -1,25 +1,33 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# A simple script to install Python 3.11 on Ubuntu 22.04.
-# This script should be run with sudo or by a user with sudo privileges.
-
-# Exit immediately if a command exits with a non-zero status.
-set -e
-
-echo "--- 🐍 Updating package lists and installing prerequisites ---"
+echo "--- 🐍 Ensuring prerequisites ---"
 sudo apt update
-sudo apt install software-properties-common -y
+sudo apt install -y software-properties-common
 
-echo "--- Adding the deadsnakes PPA for newer Python versions ---"
-sudo add-apt-repository ppa:deadsnakes/ppa -y
+# Add deadsnakes only if not already present
+if ! grep -h "^deb .*/deadsnakes/ppa" /etc/apt/sources.list /etc/apt/sources.list.d/* > /dev/null 2>&1; then
+  echo "--- ➕ Adding deadsnakes PPA ---"
+  sudo add-apt-repository -y ppa:deadsnakes/ppa
+  sudo apt update
+else
+  echo "--- 👉 deadsnakes PPA already added ---"
+fi
 
-echo "--- Updating package lists again to include the new PPA ---"
-sudo apt update
+# If python3.11 is already installed, remove it (and its venv bits)
+if dpkg -l | grep -qw python3.11; then
+  echo "--- 🗑 Removing existing Python 3.11 and venv package ---"
+  sudo apt remove --purge -y python3.11 python3.11-venv
+  sudo apt autoremove -y
+else
+  echo "--- 👉 Python 3.11 not currently installed ---"
+fi
 
-echo "--- Installing Python 3.11 and its virtual environment module ---"
-sudo apt install python3.11 python3.11-venv -y
+echo "--- 📦 Installing Python 3.11 and venv support ---"
+sudo apt install -y python3.11 python3.11-venv
 
-echo "--- Verifying the installation ---"
+echo "--- 🔍 Verifying installation ---"
 python3.11 --version
+python3.11 -m venv --help >/dev/null
 
-echo "--- ✅ Python 3.11 installation is complete! ---"
+echo "--- ✅ Python 3.11 (and venv) is ready to go! ---"

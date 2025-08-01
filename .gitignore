@@ -1,1 +1,4 @@
 /.venv
+.stdio-pid
+.sse-pid
+poetry.lock

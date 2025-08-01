@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
-import requests
-import sseclient
-import threading
-import json
+import asyncio
+from mcp import ClientSession
+from mcp.client.sse import sse_client
+from mcp.types import TextContent
 
-URL = "http://127.0.0.1:8000/sse"
+async def main():
+    # URL matching the SSE endpoint on the server
+    url = "http://127.0.0.1:8000/messages/"
 
-print(f"--- Connecting to SSE server at {URL} ---")
-resp = requests.get(URL, stream=True)
-client = sseclient.SSEClient(resp)
+    # Connect using the SSE transport
+    async with sse_client(url) as (read_stream, write_stream):
+        # Open an MCP client session over the transport streams
+        async with ClientSession(read_stream, write_stream) as session:
+            # Perform the initialization handshake
+            init_result = await session.initialize()
+            print(f"Initialized session: {init_result}")
 
-# The first message is the `endpoint` event carrying POST URL
-event = next(client)
-post_url = event.data
+            # List available tools on the server
+            tools = await session.list_tools()
+            print("Available tools:", [tool.name for tool in tools.tools])
 
-# Send JSON-RPC over POST
-data = json.dumps({
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "call_tool",
-    "params": {"name": "hello", "arguments": {}},
-})
-requests.post(post_url, data=data)
+            # Invoke the 'hello' tool (no arguments needed)
+            call_result = await session.call_tool(name="hello", arguments={})
 
-# Listen for the response message for tool result
-for event in client:
-    if event.event == "message":
-        msg = json.loads(event.data)
-        print("Server response:", msg.get("result"))
-        break
+            # Iterate over content blocks in the result
+            for content in call_result.content:
+                if isinstance(content, TextContent):
+                    print("Server says:", content.text)
+                else:
+                    print("Server returned content block of type:", type(content))
+
+if __name__ == "__main__":
+    asyncio.run(main())
