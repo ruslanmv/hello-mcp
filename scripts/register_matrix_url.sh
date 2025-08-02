@@ -1,3 +1,4 @@
+# scripts/register_matrix_by_url.sh
 curl -X POST "$HUB_URL/catalog/install" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \

@@ -1,5 +1,9 @@
-# Option B: manifest by URL
-curl -X POST "http://$HUB_ENDPOINT/catalog/install" \
+# scripts/register_matrix_inline.sh
+body="$(jq -c --arg id "hello-sse-server" --arg target "server" \
+         --argfile manifest matrix/hello-server.manifest.json \
+         '{id:$id, target:$target, manifest:$manifest}')"
+
+curl -X POST "$HUB_URL/catalog/install" \
   -H "Authorization: Bearer $ADMIN_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"manifest_url":"https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-server.manifest.json"}'
+  -d "$body"
