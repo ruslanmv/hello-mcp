@@ -5,8 +5,11 @@
   "name": "Hello World MCP (SSE)",
   "version": "0.1.0",
   "license": "MIT",
-  "summary": "Minimal SSE server exposing a single 'hello' tool.",
-  "description": "A minimal MCP server exposing a single 'hello' tool over SSE.",
+  "summary": "Minimal SSE server exposing one 'hello' tool.",
+  "description": "A minimal MCP server exposing a single 'hello' tool over Server-Sent Events (SSE).",
+  "homepage": "https://github.com/ruslanmv/hello-mcp",
+  "repository": "https://github.com/ruslanmv/hello-mcp",
+  "publisher": "ruslanmv",
   "artifacts": [],
   "mcp_registration": {
     "server": {
