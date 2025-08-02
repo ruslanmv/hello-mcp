@@ -10,7 +10,7 @@ make start-sse
 
 # 0.2 — Export the Hub base URL (must include http://) and your admin token
 export HUB_URL='http://127.0.0.1:7300'      # NOT just 0.0.0.0:7300
-export ADMIN_TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+export ADMIN_TOKEN='ey...'
 
 # 0.3 — (Optional) Quick health check
 curl -s "$HUB_URL/health" || true
