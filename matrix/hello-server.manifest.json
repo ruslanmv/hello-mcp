@@ -1,5 +1,5 @@
 {
-  "id": "hello-sse-server",
+  "id": "server:hello-sse-server@0.1.0",
   "name": "Hello World MCP (SSE)",
   "description": "A minimal MCP server exposing a single 'hello' tool over SSE.",
   "version": "0.1.0",

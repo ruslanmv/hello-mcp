@@ -1,3 +1,4 @@
 export HUB_URL="http://$HUB_ENDPOINT"
-# 0.3 — (Optional) Quick health check
+# Optional: quick sanity checks
+echo "$HUB_URL"
 curl -s "$HUB_URL/health" || true

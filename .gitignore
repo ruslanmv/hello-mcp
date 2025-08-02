@@ -2,3 +2,4 @@
 .stdio-pid
 .sse-pid
 poetry.lock
+* copy*
