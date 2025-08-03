@@ -3,3 +3,4 @@
 .sse-pid
 poetry.lock
 * copy*
+/agents/hello_world/__pycache__
