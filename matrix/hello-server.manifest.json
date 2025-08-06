@@ -25,7 +25,7 @@
     "server": {
       "name": "hello-sse-server",
       "description": "Hello SSE server",
-      "transport": "HTTP",
+      "transport": "SSE",
       "url": "http://127.0.0.1:8000/"
     }
   }
