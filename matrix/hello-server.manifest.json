@@ -8,9 +8,19 @@
   "summary": "Minimal SSE server exposing one 'hello' tool.",
   "description": "A minimal MCP server exposing a single 'hello' tool over Server-Sent Events (SSE).",
   "homepage": "https://github.com/ruslanmv/hello-mcp",
-  "repository": "https://github.com/ruslanmv/hello-mcp",
+  "repository": "https://github.com/ruslanmv/hello-mcp.git",
   "publisher": "ruslanmv",
-  "artifacts": [],
+
+  "artifacts": [
+    {
+      "kind": "git",
+      "spec": {
+        "repo": "https://github.com/ruslanmv/hello-mcp.git",
+        "ref": "main"
+      }
+    }
+  ],
+
   "mcp_registration": {
     "server": {
       "name": "hello-sse-server",
