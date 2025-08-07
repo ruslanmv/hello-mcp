@@ -34,14 +34,20 @@
         "name": "hello-sse-server inline code",
         "type": "inline",
         "uri": "file://examples/hello_world/server_sse.py",
-        "content": "Code here"  }],
+        "content": "Code here"
+      }
+    ],
     "server": {
       "name": "hello-sse-server",
       "description": "Hello SSE server",
       "transport": "SSE",
       "url": "http://127.0.0.1:8000/",
-      "associated_tools": ["hello"],
-      "associated_resources": ["hello-sse-server-code"],
+      "associated_tools": [
+        "hello"
+      ],
+      "associated_resources": [
+        "hello-sse-server-code"
+      ],
       "associated_prompts": []
     }
   }
