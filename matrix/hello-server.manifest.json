@@ -24,7 +24,7 @@
   "mcp_registration": {
     "tool": {
       "id": "hello",
-      "name": "Hello Tool",
+      "name": "hello",
       "description": "Return a simple greeting.",
       "integration_type": "REST"
     },
