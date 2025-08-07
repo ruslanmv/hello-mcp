@@ -1,7 +1,5 @@
 {
   "manifests": [
-    "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-server.manifest.json",
-    "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-agent.manifest.json",
-    "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-tool.manifest.json"
+    "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-server.manifest.json"
   ]
 }
