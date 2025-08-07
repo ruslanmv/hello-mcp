@@ -1,37 +1,50 @@
 {
+  "schema_version": 1,
+  "type": "mcp_server",
   "id": "hello-sse-agent",
-  "name": "Hello Agent",
-  "description": "Agent that uses the Hello SSE server to greet users.",
+  "name": "Hello SSE Agent",
   "version": "0.1.0",
-  "server": {
-    "id": "hello-sse-server",
-    "base_url": "http://127.0.0.1:8000/",
-    "transport": {
-      "type": "sse",
-      "events_url": "http://127.0.0.1:8000/sse",
-      "invoke_url": "http://127.0.0.1:8000/invoke"
-    }
-  },
-  "tools": [
+  "license": "MIT",
+  "summary": "Agent that uses the Hello SSE server to greet users.",
+  "description": "An MCP gateway that proxies the hello-sse-server.",
+  "homepage": null,
+  "repository": null,
+  "publisher": null,
+
+  "artifacts": [
     {
-      "name": "hello",
-      "description": "Return a simple greeting.",
-      "input_schema": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" }
-        },
-        "required": ["name"],
-        "additionalProperties": false
-      },
-      "output_schema": {
-        "type": "object",
-        "properties": {
-          "text": { "type": "string" }
-        },
-        "required": ["text"],
-        "additionalProperties": false
+      "kind": "inline",
+      "spec": {
+        "path": "examples/agents/hello-world/server.py"
       }
     }
-  ]
+  ],
+
+  "mcp_registration": {
+    "tool": {
+      "id": "hello-agent",
+      "name": "Hello Agent Tool",
+      "description": "Invokes remote greeting.",
+      "integration_type": "REST"
+    },
+    "resources": [
+      {
+        "id": "hello-sse-agent-code",
+        "name": "hello-sse-agent inline code",
+        "type": "inline",
+        "uri": "file://examples/agents/hello-world/server.py",
+        "content": |
+          # Python code for your agent… (inline)
+      }
+    ],
+    "server": {
+      "name": "hello-sse-agent",
+      "description": "Gateway for Hello SSE Server",
+      "transport": "SSE",
+      "url": "http://127.0.0.1:6288/sse",
+      "associated_tools": ["hello-agent"],
+      "associated_resources": ["hello-sse-agent-code"],
+      "associated_prompts": []
+    }
+  }
 }

@@ -1,20 +1,18 @@
 {
+  "schema_version": 1,
+  "type": "tool",
+  "id": "hello",
   "name": "hello",
+  "version": "0.1.0",
   "description": "Return a simple greeting.",
-  "input_schema": {
-    "type": "object",
-    "properties": {
-      "name": { "type": "string", "description": "Name to greet" }
-    },
-    "required": ["name"],
-    "additionalProperties": false
-  },
-  "output_schema": {
-    "type": "object",
-    "properties": {
-      "text": { "type": "string", "description": "Greeting result" }
-    },
-    "required": ["text"],
-    "additionalProperties": false
+  "license": "MIT",
+
+  "mcp_registration": {
+    "tool": {
+      "id": "hello",
+      "name": "Hello Tool",
+      "description": "Return a simple greeting.",
+      "integration_type": "REST"
+    }
   }
 }
