@@ -9,9 +9,35 @@ package-mode = false
 [tool.poetry.dependencies]
 python = "^3.11"
 mcp = "^1.12.2"
-uvicorn = "^0.30.1" # Required for SSE transport
-httpx = "^0.27.0"   # Required by SseClient
+uvicorn = "^0.30.1"
+httpx = "^0.27.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+# ---------------------------
+# MCP server discovery block
+# ---------------------------
+[tool.mcp_server]
+type = "mcp_server"                      # fixed
+id = "hello-sse-server"                  # short id
+name = "Hello World MCP (SSE)"
+version = "0.1.0"                        # you can duplicate poetry.version
+summary = "A minimal SSE MCP server exposing a 'hello' tool."
+description = "Server exposes a 'hello' tool over SSE at /messages/."
+license = "MIT"
+source_url = "https://raw.githubusercontent.com/ruslanmv/hello-mcp/main/matrix/hello-server.manifest.json"
+
+# Optional (tags, quality, etc.)
+providers = ["community"]
+frameworks = ["starlette"]
+capabilities = ["tool:hello"]
+labels.dev = "true"
+
+# Endpoint descriptor transformed into EndpointDescriptor
+[tool.mcp_server.endpoint]
+transport = "sse"                        # one of: "http" | "ws" | "sse" | "stdio"
+url = "http://127.0.0.1:8000/messages/"  # match your Starlette route
+auth = "none"                            # or "bearer" if gateway needs it
+schema = "mcp/v1"                        # wire schema string expected by your gateway
