@@ -1,15 +1,18 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "type": "mcp_server",
   "id": "hello-sse-server",
   "name": "Hello World MCP (SSE)",
   "version": "0.1.0",
-  "license": "MIT",
+
   "summary": "Minimal SSE server exposing one 'hello' tool.",
-  "description": "A minimal MCP server exposing a single 'hello' tool over Server-Sent Events (SSE).",
+  "description": "A minimal MCP server exposing a single 'hello' tool over Server-Sent Events (SSE) using the /messages/ endpoint.",
   "homepage": "https://github.com/ruslanmv/hello-mcp",
   "repository": "https://github.com/ruslanmv/hello-mcp.git",
   "publisher": "ruslanmv",
+  "license": "MIT",
+
+  "source_url": "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/matrix/hello-server.manifest.json",
 
   "artifacts": [
     {
@@ -26,28 +29,39 @@
       "id": "hello",
       "name": "hello",
       "description": "Return a simple greeting.",
-      "integration_type": "REST"
+      "integration_type": "MCP",
+      "url": "http://127.0.0.1:8000/messages/",
+      "input_schema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
     },
+
     "resources": [
       {
         "id": "hello-sse-server-code",
         "name": "hello-sse-server inline code",
         "type": "inline",
-        "uri": "file://examples/hello_world/server_sse.py",
-        "content": "Code here"
+        "uri": "file://examples/hello_world/server_sse.py"
+      },
+      {
+        "id": "hello-sse-server-url",
+        "name": "hello-sse-server (raw)",
+        "type": "url",
+        "uri": "https://raw.githubusercontent.com/ruslanmv/hello-mcp/refs/heads/main/examples/hello_world/server_sse.py"
       }
     ],
+
+    "prompts": [],
+
     "server": {
       "name": "hello-sse-server",
       "description": "Hello SSE server",
       "transport": "SSE",
-      "url": "http://127.0.0.1:8000/",
-      "associated_tools": [
-        "hello"
-      ],
-      "associated_resources": [
-        "hello-sse-server-code"
-      ],
+      "url": "http://127.0.0.1:8000/messages/",
+      "associated_tools": ["hello"],
+      "associated_resources": ["hello-sse-server-code", "hello-sse-server-url"],
       "associated_prompts": []
     }
   }
