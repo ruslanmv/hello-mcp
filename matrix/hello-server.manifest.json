@@ -5,18 +5,11 @@
   "name": "Hello World MCP (SSE)",
   "version": "0.1.0",
   "license": "MIT",
-  "publisher": "ruslanmv",
   "summary": "Minimal SSE server exposing one 'hello' tool.",
   "description": "A minimal MCP server exposing a single 'hello' tool over Server-Sent Events (SSE).",
   "homepage": "https://github.com/ruslanmv/hello-mcp",
   "repository": "https://github.com/ruslanmv/hello-mcp.git",
-
-  "capabilities": ["hello"],
-
-  "compatibility": {
-    "frameworks": [],
-    "providers": []
-  },
+  "publisher": "ruslanmv",
 
   "artifacts": [
     {
@@ -29,13 +22,33 @@
   ],
 
   "mcp_registration": {
+    "tool": {
+      "id": "hello",
+      "name": "hello",
+      "description": "Return a simple greeting.",
+      "integration_type": "REST"
+    },
+    "resources": [
+      {
+        "id": "hello-sse-server-code",
+        "name": "hello-sse-server inline code",
+        "type": "inline",
+        "uri": "file://examples/hello_world/server_sse.py",
+        "content": "Code here"
+      }
+    ],
     "server": {
       "name": "hello-sse-server",
       "description": "Hello SSE server",
       "transport": "SSE",
-      "url": "http://127.0.0.1:8000/messages/",
-      "associated_tools": ["hello"],
-      "associated_resources": []
+      "url": "http://127.0.0.1:8000/",
+      "associated_tools": [
+        "hello"
+      ],
+      "associated_resources": [
+        "hello-sse-server-code"
+      ],
+      "associated_prompts": []
     }
   }
 }
