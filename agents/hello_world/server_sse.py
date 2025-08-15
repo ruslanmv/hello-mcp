@@ -7,6 +7,7 @@ from mcp.server.models import InitializationOptions
 import mcp.types as types
 import uvicorn
 import os
+
 # 1) Low-level server
 server = Server("hello-world-sse")
 
@@ -55,9 +56,13 @@ async def messages_asgi(scope, receive, send):
     else:  # POST
         await sse.handle_post_message(scope, receive, send)
 
-# 5) Starlette app
+# 5) Starlette app (including a /health endpoint for the doctor)
+async def health_check(request):
+    return Response("OK", media_type="text/plain")
+
 app = Starlette(routes=[
     Mount("/messages/", app=messages_asgi),
+    Route("/health", endpoint=health_check),
 ])
 
 if __name__ == "__main__":
