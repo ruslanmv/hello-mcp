@@ -5,7 +5,8 @@ from mcp.server.lowlevel import Server, NotificationOptions
 from mcp.server.sse import SseServerTransport
 from mcp.server.models import InitializationOptions
 import mcp.types as types
-
+import uvicorn
+import os
 # 1) Low-level server
 server = Server("hello-world-sse")
 
@@ -60,5 +61,6 @@ app = Starlette(routes=[
 ])
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    # Read the port from the environment variable, defaulting to 8000 if not set.
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="127.0.0.1", port=port)
