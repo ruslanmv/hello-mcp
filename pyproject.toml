@@ -8,9 +8,9 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
-mcp = "^1.12.2"
-uvicorn = "^0.30.1"
-httpx = "^0.27.0"
+mcp = "~=1.12.2"
+uvicorn = "~=0.30.1"
+httpx = "~=0.27.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,6 +38,6 @@ labels.dev = "true"
 # Endpoint descriptor transformed into EndpointDescriptor
 [tool.mcp_server.endpoint]
 transport = "sse"                        # one of: "http" | "ws" | "sse" | "stdio"
-url = "http://127.0.0.1:8000/messages/"  # match your Starlette route
+url = "http://127.0.0.1:8000/messages/"   # match your Starlette route
 auth = "none"                            # or "bearer" if gateway needs it
 schema = "mcp/v1"                        # wire schema string expected by your gateway
