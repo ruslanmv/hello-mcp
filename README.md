@@ -1,5 +1,7 @@
 # MCP Core: Hello World Agent
 
+[![MatrixHub Ready](https://img.shields.io/badge/MatrixHub-Ready-brightgreen?logo=matrix&logoColor=white)](https://github.com/agent-matrix/matrix-hub)
+
 This project demonstrates how to build a minimal “Hello World” agent using the core `mcp` library, **without** the `FastMCP` helper. It includes two interchangeable transport modes:
 
 1. **STDIO** — the client spawns the server as a subprocess and they talk over pipes (`stdin`/`stdout`).
